@@ -147,14 +147,21 @@ for (const file of commandFiles) {
 const prefix = process.env.PREFIX || '!';
 
 client.on(Events.MessageCreate, async (message) => {
+
     // プレフィックスコマンドの処理
     if (!message.author.bot && message.content.startsWith(prefix)) {
         const args = message.content.slice(prefix.length).trim().split(/ +/);
         const commandName = args.shift().toLowerCase();
         const command = client.prefixCommands.get(commandName);
 
+        //プレイヤーデータでBANされていたら無視
+        db.get('SELECT * FROM player WHERE userId = ?', [message.author.id], (err, row) => {
+            if (err) console.error('Database error:', err);
+            if (row && row.ban) return
+        });
+
         if (!command) {
-            return message.reply({ content: "そのコマンドは見つかりませんでした！", allowedMentions: { repliedUser: false } });
+            return message.reply({ content: "コマンドが見つかりません", allowedMentions: { repliedUser: false } });
         }
 
         // 管理者専用コマンドの権限チェック
@@ -245,6 +252,14 @@ for (const file of modalCommandFiles) {
 
 // インタラクションの処理
 client.on(Events.InteractionCreate, async interaction => {
+
+    //プレイヤーデータでBANされていたら無視
+    db.get('SELECT * FROM player WHERE userId = ?', [interaction.user.id], (err, row) => {
+        if (err) console.error('Database error:', err);
+        if (row && row.ban) return
+    });
+
+    // スラッシュコマンド、ボタン、セレクトメニュー、モーダルの処理
     if (interaction.isChatInputCommand()) {
         const command = client.slashCommands.get(interaction.commandName);
 

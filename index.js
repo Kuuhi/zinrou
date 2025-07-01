@@ -105,7 +105,7 @@ process.on("uncaughtException", async (error) => {
         .setStyle(ButtonStyle.Success);
     const row = new ActionRowBuilder().addComponents(buttonA, buttonB, buttonC);
 
-    await client.channels.cache.get("1386302548910149692") ?.send({ embeds: [embed], components: [row] });
+    await client.channels.cache.get("1386302548910149692")?.send({ embeds: [embed], components: [row] });
 });
 
 // --- イベントの読み込みと登録 ---
@@ -263,10 +263,7 @@ client.on(Events.InteractionCreate, async interaction => {
     if (interaction.isChatInputCommand()) {
         const command = client.slashCommands.get(interaction.commandName);
 
-        if (!command) {
-            console.error(`No command matching ${interaction.commandName} was found.`);
-            return;
-        }
+        if (!command) return;
 
         // 管理者専用コマンドの権限チェック (スラッシュコマンド版)
         if (command.adminOnly) {
@@ -293,10 +290,7 @@ client.on(Events.InteractionCreate, async interaction => {
         const commandName = customIdParts[0]; // コマンド名
         const command = client.buttonCommands.get(commandName);
 
-        if (!command) {
-            console.error(`No button command matching ${commandName} was found.`);
-            return;
-        }
+        if (!command) return;
 
         // 引数部分を抽出し、'_'で分割して配列にする
         let args = [];
@@ -327,10 +321,7 @@ client.on(Events.InteractionCreate, async interaction => {
         const commandName = interaction.customId.split('_')[0];
         const command = client.selectMenuCommands.get(commandName);
 
-        if (!command) {
-            console.error(`No select menu command matching ${commandName} was found.`);
-            return;
-        }
+        if (!command) return;
 
         // 管理者専用セレクトメニューの権限チェック
         if (command.adminOnly) {
@@ -355,10 +346,7 @@ client.on(Events.InteractionCreate, async interaction => {
         const commandName = interaction.customId.split('_')[0];
         const command = client.modalCommands.get(commandName);
 
-        if (!command) {
-            console.error(`No modal command matching ${commandName} was found.`);
-            return;
-        }
+        if (!command) return;
 
         // 管理者専用モーダルの権限チェック
         if (command.adminOnly) {

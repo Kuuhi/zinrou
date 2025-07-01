@@ -42,7 +42,7 @@ const db = new sqlite3.Database("./database.db");
 
 db.run(
     `CREATE TABLE IF NOT EXISTS player(
-    userId TINYINT,
+    userId VARCHAR,
     nick CHAR,
     admin BOOL,
     ban BOOL,
@@ -66,8 +66,19 @@ db.run(
     players JSON,
     roles JSON,
     config JSON,
+    topURL VARCHAR,
     )`
 );
+
+/*
+db.run(
+    `CREATE TABLE IF NOT EXISTS setting(
+    guildId VARCHAR,
+    prefix VARCHAR DEFAULT '!',
+    logChannelId VARCHAR,
+    )`
+);
+*/
 
 
 process.on("uncaughtException", async (error) => {

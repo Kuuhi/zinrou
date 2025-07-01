@@ -41,11 +41,32 @@ const sqlite3 = require("sqlite3");
 const db = new sqlite3.Database("./database.db");
 
 db.run(
-    "CREATE TABLE IF NOT EXISTS members(userId ,exp,coin)"
+    `CREATE TABLE IF NOT EXISTS player(
+    userId TINYINT,
+    nick CHAR,
+    admin BOOL,
+    ban BOOL,
+    warn JSON,
+    createAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+    joinRole VARCHAR,
+    record JSON,
+    )`
 );
 
 db.run(
-    `CREATE TABLE IF NOT EXISTS suggestion(url VARCHAR,isVotingActive BOOL,agree INTEGER,disagree INTEGER)`
+    `CREATE TABLE IF NOT EXISTS rooms(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name VARCHAR,
+    description VARCHAR,
+    ownerId TINYINT,
+    password VARCHAR,
+    createTime DATETIME DEFAULT CURRENT_TIMESTAMP,
+    channelId VARCHAR,
+    status VARCHAR,
+    players JSON,
+    roles JSON,
+    config JSON,
+    )`
 );
 
 

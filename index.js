@@ -49,7 +49,7 @@ db.run(
     warn JSON,
     createAt DATETIME DEFAULT CURRENT_TIMESTAMP,
     joinRole VARCHAR,
-    record JSON,
+    record JSON
     )`
 );
 
@@ -66,7 +66,7 @@ db.run(
     players JSON,
     roles JSON,
     config JSON,
-    topURL VARCHAR,
+    topURL VARCHAR
     )`
 );
 

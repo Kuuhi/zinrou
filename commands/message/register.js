@@ -7,7 +7,7 @@ const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('
 
 module.exports = {
     name: 'register',
-    aliases: ['signup', 'registerUser'],
+    aliases: ['signup', 'reg'],
     description: '新規ユーザー登録を行います',
     adminOnly: false,
 

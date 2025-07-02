@@ -1,85 +1,63 @@
-// commands\message\getPlayer.js   あとで精査
+// commands\message\getPlayer.js
 
 const sqlite3 = require('sqlite3').verbose();
 const db = new sqlite3.Database("./database.db");
 
+const { EmbedBuilder } = require('discord.js');
+
 module.exports = {
     name: 'getPlayer',
-    aliases: ['gp', 'player', 'getplayer'],
+    aliases: ['gp', 'player', 'getplayer', 'p'],
     description: 'プレイヤー情報を取得します',
     adminOnly: false,
 
     async execute(client, message, args) {
 
-        const ownerId = message.author.id;
-        const guildId = message.guild.id;
-        const channelId = message.channel.id;
 
-        if (!channelId) return;
-        if (!guildId) return;
+        // コマンド実行者のデータ取得
+        db.get('SELECT * FROM player WHERE userId = ?', [message.author.id], (err, data) => {
 
-        // ユーザーがすでに登録されているか確認とデータ取得
+            if (err) {
+                console.error('Database error:', err);
+                return message.reply({ content: 'データベースエラーが発生しました。時間を置いて再度お試しください。', allowedMentions: { repliedUser: false } });
+            }
+            if (!data) return
 
-        if (args[0]) {
-            // 引数が指定されている場合は、そのユーザーの情報を取得(adminのみ)
+            if (data.admin && args[0]) {
 
-            //実行者が管理者か確認
-            db.get('SELECT * FROM player WHERE userId = ?', [ownerId], (err, data) => {
+                const targetId = args[0].replace(/<@!?(\d+)>/, '$1') || args[0];
 
-                if (err) {
-                    console.error('Database error:', err);
-                    return message.reply({ content: 'データベースエラーが発生しました。時間を置いて再度お試しください。', allowedMentions: { repliedUser: false } });
-                }
-                if (!data || !data.admin) return
+                // ターゲットのデータを取得・送信
+                db.get('SELECT * FROM player WHERE userId = ?', [targetId], (err, data) => {
 
-            });
+                    if (err) {
+                        console.error('Database error:', err);
+                        return message.reply({ content: 'データベースエラーが発生しました。時間を置いて再度お試しください。', allowedMentions: { repliedUser: false } });
+                    }
+                    if (!data) {
+                        return message.reply({ content: 'データが見つかりませんでした', allowedMentions: { repliedUser: false } });
+                    }
 
-            const targetId = args[0].replace(/<@!?(\d+)>/, '$1') || args[0]; // ユーザーIDを取得
+                    const embed = new EmbedBuilder()
+                        .setColor(0x808080)
+                        .setAuthor({ name: message.author.name, iconURL: message.author.iconURL() })
+                        .setDescription(`userId: ${data.userId}\nnick: ${data.nick}\nadmin: ${data.admin ? 'はい' : 'いいえ'}\nban: ${data.ban ? 'はい' : 'いいえ'}\ncreateAt: ${data.createAt}\njoinRoomId: ${data.joinRoomId ? joinRoomId : "-"}\nexp: ${data.exp}`)
 
-            db.get('SELECT * FROM player WHERE userId = ?', [targetId], (err, data) => {
+                    message.reply({ embeds: [embed], allowedMentions: { repliedUser: false } });
 
-                if (err) {
-                    console.error('Database error:', err);
-                    return message.reply({ content: 'データベースエラーが発生しました。時間を置いて再度お試しください。', allowedMentions: { repliedUser: false } });
-                }
-                if (!data) {
-                    return message.reply({ content: '指定されたユーザーは登録されていません。', allowedMentions: { repliedUser: false } });
-                }
+                })
 
-                const playerInfo = `
-            ユーザーID: ${data.userId}
-            ニックネーム: ${data.nick}
-            管理者: ${data.admin ? 'はい' : 'いいえ'}
-            参加中の部屋ID: ${data.joinRoomId}
-            バン状態: ${data.ban}
-            経験値: ${data.exp}
-            `;
+            } else {
 
-                message.reply({ content: playerInfo, allowedMentions: { repliedUser: false } });
-            });
-        } else {
+                // ターゲットが指定されていない場合は実行者のデータを送信
+                const embed = new EmbedBuilder()
+                    .setColor(0x808080)
+                    .setAuthor({ name: message.author.username, iconURL: message.author.avatarURL() })
+                    .setDescription(`userId: ${data.userId}\nnick: ${data.nick}\nadmin: ${data.admin ? 'はい' : 'いいえ'}\nban: ${data.ban ? 'はい' : 'いいえ'}\ncreateAt: ${data.createAt}\njoinRoomId: ${data.joinRoomId ? joinRoomId : "-"}\nexp: ${data.exp}`)
 
-            // 引数が指定されていない場合は、コマンドを実行したユーザーの情報を取得
-            db.get('SELECT * FROM player WHERE userId = ?', [ownerId], (err, data) => {
+                message.reply({ embeds: [embed], allowedMentions: { repliedUser: false } });
 
-                if (err) {
-                    console.error('Database error:', err);
-                    return message.reply({ content: 'データベースエラーが発生しました。時間を置いて再度お試しください。', allowedMentions: { repliedUser: false } });
-                }
-                if (!data) {
-                    return message.reply({ content: 'ユーザーが登録されていません。', allowedMentions: { repliedUser: false } });
-                }
-
-                const playerInfo = `
-            ユーザーID: ${data.userId}
-            ニックネーム: ${data.nick}
-            管理者: ${data.admin ? 'はい' : 'いいえ'}
-            バン状態: ${data.ban}
-            経験値: ${data.exp}
-            `;
-
-                message.reply({ content: playerInfo, allowedMentions: { repliedUser: false } });
-            });
-        }
+            }
+        });
     }
 };

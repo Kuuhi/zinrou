@@ -48,8 +48,9 @@ db.run(
     ban BOOL,
     warn JSON,
     createAt DATETIME DEFAULT CURRENT_TIMESTAMP,
-    joinRole VARCHAR,
-    record JSON
+    joinRoom VARCHAR,
+    record JSON,
+    exp INTEGER DEFAULT 0
     )`
 );
 

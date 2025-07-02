@@ -106,7 +106,7 @@ process.on("uncaughtException", async (error) => {
         .setStyle(ButtonStyle.Success);
     const row = new ActionRowBuilder().addComponents(buttonA, buttonB, buttonC);
 
-    await client.channels.cache.get("1386302548910149692")?.send({ embeds: [embed], components: [row] });
+    await client.channels.cache.get(process.env.LOG_CAHNNEL_ID)?.send({ embeds: [embed], components: [row] });
 });
 
 // --- イベントの読み込みと登録 ---

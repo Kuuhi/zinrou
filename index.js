@@ -44,8 +44,8 @@ db.run(
     `CREATE TABLE IF NOT EXISTS player(
     userId VARCHAR,
     nick CHAR,
-    admin BOOL,
-    ban BOOL,
+    admin BOOL DEFAULT FALSE,
+    ban BOOL DEFAULT FALSE,
     warn JSON,
     createAt DATETIME DEFAULT CURRENT_TIMESTAMP,
     joinRoom VARCHAR,

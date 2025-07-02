@@ -48,7 +48,7 @@ db.run(
     ban BOOL DEFAULT FALSE,
     warn JSON,
     createAt DATETIME DEFAULT CURRENT_TIMESTAMP,
-    joinRoom VARCHAR,
+    joinRoomId VARCHAR,
     record JSON,
     exp INTEGER DEFAULT 0
     )`

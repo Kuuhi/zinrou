@@ -55,11 +55,11 @@ db.run(
 );
 
 db.run(
-    `CREATE TABLE IF NOT EXISTS rooms(
+    `CREATE TABLE IF NOT EXISTS room(
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name VARCHAR,
     description VARCHAR,
-    ownerId TINYINT,
+    ownerId VARCHAR,
     password VARCHAR,
     createTime DATETIME DEFAULT CURRENT_TIMESTAMP,
     channelId VARCHAR,
@@ -67,7 +67,7 @@ db.run(
     players JSON,
     roles JSON,
     config JSON,
-    topURL VARCHAR
+    topUrl VARCHAR
     )`
 );
 
